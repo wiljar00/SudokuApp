@@ -1,6 +1,10 @@
 package com.mycompany.sudoku;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
 
@@ -11,10 +15,18 @@ public class Main {
         int[][] newBoard = createBlankBoard();
         fillDiagonalSubgrids(newBoard);
 
-        // Complete the board with the backtracking algorithm
         if (fillBoard(newBoard)) {
             System.out.println("Solved Board: ");
             printSudokuBoard(newBoard);
+
+            // Randomize the board
+            randomizeBoard(newBoard);
+
+            System.out.println("\nRandomized Board: ");
+            printSudokuBoard(newBoard);
+
+            // Allow user to solve the puzzle
+            solveSudoku(newBoard);
         } else {
             System.out.println("No solution exists.");
         }
@@ -29,6 +41,91 @@ public class Main {
 
     public static int[][] createBlankBoard() {
         return new int[9][9]; // hard coded size for now
+    }
+
+    // shuffle the rows, columns, and subgrids
+    private static void randomizeBoard(int[][] board) {
+        List<Integer> values = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            values.add(i);
+        }
+
+        Collections.shuffle(values);
+
+        // Shuffle rows
+        for (int i = 0; i < 9; i++) {
+            int temp = values.get(i);
+            for (int j = 0; j < 9; j++) {
+                board[i][j] = (board[i][j] + temp) % 9 + 1;
+            }
+        }
+
+        // Shuffle columns
+        for (int i = 0; i < 9; i++) {
+            int temp = values.get(i);
+            for (int j = 0; j < 9; j++) {
+                board[j][i] = (board[j][i] + temp) % 9 + 1;
+            }
+        }
+
+        // Shuffle subgrids
+        for (int i = 0; i < 9; i += 3) {
+            int temp = values.get(i);
+            for (int j = 0; j < 9; j += 3) {
+                for (int k = 0; k < 3; k++) {
+                    for (int l = 0; l < 3; l++) {
+                        board[i + k][j + l] = (board[i + k][j + l] + temp) % 9 + 1;
+                    }
+                }
+            }
+        }
+    }
+
+    // lets user solve the puzzle
+    public static void solveSudoku(int[][] board) {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\nEnter row and column (1-9) and value (1-9) to fill or 0 to exit: ");
+
+            System.out.println("\nRow: ");
+            int row = scanner.nextInt();
+            if (row == 0) {
+                break;
+            }
+            System.out.println("\nColumn: ");
+            int col = scanner.nextInt();
+            System.out.println("\nValue: ");
+            int value = scanner.nextInt();
+            if (isValidMove(board, row - 1, col - 1, value)) {
+                board[row - 1][col - 1] = value;
+                printSudokuBoard(board);
+            } else {
+                System.out.println("Invalid move! Try again.");
+            }
+        }
+        scanner.close();
+    }
+
+       // check if a move is valid
+       public static boolean isValidMove(int[][] board, int row, int col, int num) {
+        // Check row and column
+        for (int i = 0; i < 9; i++) {
+            if (board[row][i] == num || board[i][col] == num) {
+                return false;
+            }
+        }
+
+        // Check subgrid
+        int subgridStartRow = row - row % 3;
+        int subgridStartCol = col - col % 3;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[subgridStartRow + i][subgridStartCol + j] == num) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static void fillDiagonalSubgrids(int[][] board) {
