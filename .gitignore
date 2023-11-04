@@ -1,2 +1,8 @@
+# Compiled class files
+*.class
 
-src/com/mycompany/sudoku/Main.class
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
