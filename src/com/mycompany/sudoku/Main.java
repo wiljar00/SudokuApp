@@ -5,8 +5,17 @@ public class Main {
     public static void main(String[] args) {
         sayHello();
 
+        System.out.println("\n");
+
+        System.out.println("Sample Board: ");
         int[][] board = createExampleBoard();
         printSudokuboard(board);
+
+        System.out.println("\n");
+
+        System.out.println("Blank Board: ");
+        int[][] blankBoard = createBlankBoard();
+        printSudokuboard(blankBoard);
     }
 
     public static void sayHello() {
@@ -16,6 +25,25 @@ public class Main {
         System.out.println("- - - - - - - - - - ");
     }
 
+
+    public static int[][] createBlankBoard() {
+        int[][] board = {
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0}
+        };
+        return board;
+    }
+
+
+
+    // Example used for testing...
     public static int[][] createExampleBoard() {
         int[][] board = {
             {5, 3, 0, 0, 7, 0, 0, 0, 0},
