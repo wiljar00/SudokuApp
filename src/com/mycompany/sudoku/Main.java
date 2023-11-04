@@ -6,18 +6,18 @@ public class Main {
 
     public static void main(String[] args) {
         sayHello();
-
         System.out.println("\n");
 
         int[][] newBoard = createBlankBoard();
-        System.out.println("Blank Board: ");
-        printSudokuboard(newBoard);
-
-        System.out.println("\n");
-
         fillDiagonalSubgrids(newBoard);
-        System.out.println("Filled Board: ");
-        printSudokuboard(newBoard);
+
+        // Complete the board with the backtracking algorithm
+        if (fillBoard(newBoard)) {
+            System.out.println("Solved Board: ");
+            printSudokuBoard(newBoard);
+        } else {
+            System.out.println("No solution exists.");
+        }
     }
 
     public static void sayHello() {
@@ -27,20 +27,16 @@ public class Main {
         System.out.println("- - - - - - - - - - ");
     }
 
-
     public static int[][] createBlankBoard() {
-        int[][] board = new int[9][9]; // hard coded size for now
-        return board;
+        return new int[9][9]; // hard coded size for now
     }
 
-    // fills each of the main diagonal 3x3 subgrids with random, valid numbers by calling the fillSubgrid method
     public static void fillDiagonalSubgrids(int[][] board) {
         for (int i = 0; i < 9; i += 3) {
             fillSubgrid(board, i, i);
         }
     }
 
-    // fills a 3x3 subgrid starting from the specified row and column with shuffled numbers from 1 to 9
     private static void fillSubgrid(int[][] board, int row, int col) {
         int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         shuffleArray(nums);
@@ -52,8 +48,6 @@ public class Main {
         }
     }
 
-    // shuffles the array of numbers to be placed in the subgrid, ensuring that 
-    // each row, column, and 3x3 subgrid contains unique numbers from 1 to 9 
     private static void shuffleArray(int[] array) {
         Random random = new Random();
         for (int i = array.length - 1; i > 0; i--) {
@@ -64,8 +58,76 @@ public class Main {
         }
     }
 
+    public static boolean fillBoard(int[][] board) {
+        // Find an unassigned cell
+        int[] nextCell = findUnassignedLocation(board);
+        if (nextCell == null) {
+            return true; // Board is filled, puzzle solved
+        }
 
-    public static void printSudokuboard(int[][] board) {
+        int row = nextCell[0];
+        int col = nextCell[1];
+
+        for (int num = 1; num <= 9; num++) {
+            if (isSafe(board, row, col, num)) {
+                board[row][col] = num;
+
+                if (fillBoard(board)) {
+                    return true;
+                }
+
+                board[row][col] = 0; // Backtrack
+            }
+        }
+
+        return false; // No valid number can be placed, backtrack
+    }
+
+    private static int[] findUnassignedLocation(int[][] board) {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                if (board[row][col] == 0) {
+                    return new int[]{row, col};
+                }
+            }
+        }
+        return null; // All cells are filled
+    }
+
+    private static boolean isSafe(int[][] board, int row, int col, int num) {
+        return isRowSafe(board, row, num) && isColSafe(board, col, num) && isSubgridSafe(board, row - row % 3, col - col % 3, num);
+    }
+
+    private static boolean isRowSafe(int[][] board, int row, int num) {
+        for (int col = 0; col < 9; col++) {
+            if (board[row][col] == num) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isColSafe(int[][] board, int col, int num) {
+        for (int row = 0; row < 9; row++) {
+            if (board[row][col] == num) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isSubgridSafe(int[][] board, int subRow, int subCol, int num) {
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                if (board[row + subRow][col + subCol] == num) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void printSudokuBoard(int[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 System.out.print(board[i][j] + " ");
