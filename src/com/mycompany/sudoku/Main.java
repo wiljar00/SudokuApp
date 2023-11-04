@@ -1,5 +1,7 @@
 package com.mycompany.sudoku;
 
+import java.util.Random;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -7,15 +9,15 @@ public class Main {
 
         System.out.println("\n");
 
-        System.out.println("Sample Board: ");
-        int[][] board = createExampleBoard();
-        printSudokuboard(board);
+        int[][] newBoard = createBlankBoard();
+        System.out.println("Blank Board: ");
+        printSudokuboard(newBoard);
 
         System.out.println("\n");
 
-        System.out.println("Blank Board: ");
-        int[][] blankBoard = createBlankBoard();
-        printSudokuboard(blankBoard);
+        fillDiagonalSubgrids(newBoard);
+        System.out.println("Filled Board: ");
+        printSudokuboard(newBoard);
     }
 
     public static void sayHello() {
@@ -27,37 +29,41 @@ public class Main {
 
 
     public static int[][] createBlankBoard() {
-        int[][] board = {
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0, 0}
-        };
+        int[][] board = new int[9][9]; // hard coded size for now
         return board;
     }
 
-
-
-    // Example used for testing...
-    public static int[][] createExampleBoard() {
-        int[][] board = {
-            {5, 3, 0, 0, 7, 0, 0, 0, 0},
-            {6, 0, 0, 1, 9, 5, 0, 0, 0},
-            {0, 9, 8, 0, 0, 0, 0, 6, 0},
-            {8, 0, 0, 0, 6, 0, 0, 0, 3},
-            {4, 0, 0, 8, 0, 3, 0, 0, 1},
-            {7, 0, 0, 0, 2, 0, 0, 0, 6},
-            {0, 6, 0, 0, 0, 0, 2, 8, 0},
-            {0, 0, 0, 4, 1, 9, 0, 0, 5},
-            {0, 0, 0, 0, 8, 0, 0, 7, 9}
-        };
-        return board;
+    // fills each of the main diagonal 3x3 subgrids with random, valid numbers by calling the fillSubgrid method
+    public static void fillDiagonalSubgrids(int[][] board) {
+        for (int i = 0; i < 9; i += 3) {
+            fillSubgrid(board, i, i);
+        }
     }
+
+    // fills a 3x3 subgrid starting from the specified row and column with shuffled numbers from 1 to 9
+    private static void fillSubgrid(int[][] board, int row, int col) {
+        int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        shuffleArray(nums);
+        int index = 0;
+        for (int i = row; i < row + 3; i++) {
+            for (int j = col; j < col + 3; j++) {
+                board[i][j] = nums[index++];
+            }
+        }
+    }
+
+    // shuffles the array of numbers to be placed in the subgrid, ensuring that 
+    // each row, column, and 3x3 subgrid contains unique numbers from 1 to 9 
+    private static void shuffleArray(int[] array) {
+        Random random = new Random();
+        for (int i = array.length - 1; i > 0; i--) {
+            int index = random.nextInt(i + 1);
+            int temp = array[index];
+            array[index] = array[i];
+            array[i] = temp;
+        }
+    }
+
 
     public static void printSudokuboard(int[][] board) {
         for (int i = 0; i < board.length; i++) {
