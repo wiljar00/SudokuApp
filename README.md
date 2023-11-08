@@ -23,7 +23,7 @@ javac SudokuGUI.java
 ```
 2. Run: 
 ```
-javac SudokuGUI.java
+java SudokuGUI.java
 ```
 ### _TODO:_
 1. research backtracking and randomizer issues

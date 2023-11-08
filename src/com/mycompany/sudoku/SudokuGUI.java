@@ -1,15 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
 
 public class SudokuGUI extends JFrame {
-    private int[][] board;
-
     public SudokuGUI(int[][] board) {
-        this.board = board;
         setTitle("Sudoku Game");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
