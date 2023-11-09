@@ -1,7 +1,9 @@
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Random;
 import java.util.Scanner;
+import javax.swing.border.LineBorder;
 
 public class SudokuGUI extends JFrame {
     public SudokuGUI(int[][] board) {
@@ -20,10 +22,31 @@ public class SudokuGUI extends JFrame {
                     textField.setText(String.valueOf(board[i][j]));
                     textField.setEditable(false);
                 }
+
+                // Add border to the text fields
+                Border border = BorderFactory.createLineBorder(Color.BLACK);
+                if (i % 3 == 0 && i != 0) {
+                    if (j % 3 == 0 && j != 0) {
+                        textField.setBorder(BorderFactory.createCompoundBorder(border,
+                                BorderFactory.createMatteBorder(1, 1, 4, 4, Color.BLACK)));
+                    } else {
+                        textField.setBorder(BorderFactory.createCompoundBorder(border,
+                                BorderFactory.createMatteBorder(1, 1, 1, 4, Color.BLACK)));
+                    }
+                } else {
+                    if (j % 3 == 0 && j != 0) {
+                        textField.setBorder(BorderFactory.createCompoundBorder(border,
+                                BorderFactory.createMatteBorder(1, 1, 4, 1, Color.BLACK)));
+                    } else {
+                        textField.setBorder(BorderFactory.createCompoundBorder(border,
+                                BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK)));
+                    }
+                }
                 panel.add(textField);
             }
         }
         add(panel);
+
     }
 
     public static void main(String[] args) {
