@@ -6,12 +6,12 @@ import java.util.Scanner;
 public class SudokuGUI extends JFrame {
     public SudokuGUI(int[][] board) {
         setTitle("Sudoku Game");
-        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new SudokuPanel(board);
         add(panel);
+        pack(); // Adjust the window size to fit the preferred size of its subcomponents
     }
 
     private static class SudokuPanel extends JPanel {
@@ -24,33 +24,25 @@ public class SudokuGUI extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            drawGridLines(g);
-            drawNumbers(g);
-        }
-
-        private void drawGridLines(Graphics g) {
             int width = getWidth();
             int height = getHeight();
+            int cellSize = Math.min(width, height) / 9;
 
             // Draw the grid lines
             g.setColor(Color.BLACK);
-            int cellSize = Math.min(width, height) / 9;
             for (int i = 0; i <= 9; i++) {
                 if (i % 3 == 0) {
-                    ((Graphics2D) g).setStroke(new BasicStroke(3));
+                    g.fillRect(i * cellSize - 1, 0, 3, height);
+                    g.fillRect(0, i * cellSize - 1, width, 3);
                 } else {
-                    ((Graphics2D) g).setStroke(new BasicStroke(1));
+                    g.fillRect(i * cellSize - 1, 0, 1, height);
+                    g.fillRect(0, i * cellSize - 1, width, 1);
                 }
-                g.drawLine(i * cellSize, 0, i * cellSize, height);
-                g.drawLine(0, i * cellSize, width, i * cellSize);
             }
-        }
 
-        private void drawNumbers(Graphics g) {
+            // Draw the numbers
             g.setFont(new Font("Arial", Font.BOLD, 20));
             FontMetrics metrics = g.getFontMetrics();
-
-            int cellSize = Math.min(getWidth(), getHeight()) / 9;
 
             for (int i = 0; i < 9; i++) {
                 for (int j = 0; j < 9; j++) {
@@ -62,6 +54,11 @@ public class SudokuGUI extends JFrame {
                     }
                 }
             }
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            return new Dimension(450, 450); // Adjust the preferred size of the panel
         }
     }
 
