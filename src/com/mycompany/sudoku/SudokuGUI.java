@@ -1,52 +1,68 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.Random;
 import java.util.Scanner;
-import javax.swing.border.LineBorder;
 
 public class SudokuGUI extends JFrame {
     public SudokuGUI(int[][] board) {
         setTitle("Sudoku Game");
-        setSize(400, 400);
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(9, 9));
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                JTextField textField = new JTextField();
-                textField.setHorizontalAlignment(JTextField.CENTER);
-                textField.setFont(new Font("Arial", Font.BOLD, 20));
-                if (board[i][j] != 0) {
-                    textField.setText(String.valueOf(board[i][j]));
-                    textField.setEditable(false);
-                }
+        JPanel panel = new SudokuPanel(board);
+        add(panel);
+    }
 
-                // Add border to the text fields
-                Border border = BorderFactory.createLineBorder(Color.BLACK);
-                if (i % 3 == 0 && i != 0) {
-                    if (j % 3 == 0 && j != 0) {
-                        textField.setBorder(BorderFactory.createCompoundBorder(border,
-                                BorderFactory.createMatteBorder(1, 1, 4, 4, Color.BLACK)));
-                    } else {
-                        textField.setBorder(BorderFactory.createCompoundBorder(border,
-                                BorderFactory.createMatteBorder(1, 1, 1, 4, Color.BLACK)));
-                    }
+    private static class SudokuPanel extends JPanel {
+        private final int[][] board;
+
+        public SudokuPanel(int[][] board) {
+            this.board = board;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            drawGridLines(g);
+            drawNumbers(g);
+        }
+
+        private void drawGridLines(Graphics g) {
+            int width = getWidth();
+            int height = getHeight();
+
+            // Draw the grid lines
+            g.setColor(Color.BLACK);
+            int cellSize = Math.min(width, height) / 9;
+            for (int i = 0; i <= 9; i++) {
+                if (i % 3 == 0) {
+                    ((Graphics2D) g).setStroke(new BasicStroke(3));
                 } else {
-                    if (j % 3 == 0 && j != 0) {
-                        textField.setBorder(BorderFactory.createCompoundBorder(border,
-                                BorderFactory.createMatteBorder(1, 1, 4, 1, Color.BLACK)));
-                    } else {
-                        textField.setBorder(BorderFactory.createCompoundBorder(border,
-                                BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK)));
-                    }
+                    ((Graphics2D) g).setStroke(new BasicStroke(1));
                 }
-                panel.add(textField);
+                g.drawLine(i * cellSize, 0, i * cellSize, height);
+                g.drawLine(0, i * cellSize, width, i * cellSize);
             }
         }
-        add(panel);
 
+        private void drawNumbers(Graphics g) {
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            FontMetrics metrics = g.getFontMetrics();
+
+            int cellSize = Math.min(getWidth(), getHeight()) / 9;
+
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 9; j++) {
+                    if (board[i][j] != 0) {
+                        String number = String.valueOf(board[i][j]);
+                        int x = j * cellSize + (cellSize - metrics.stringWidth(number)) / 2;
+                        int y = (i + 1) * cellSize - (cellSize - metrics.getHeight()) / 2;
+                        g.drawString(number, x, y);
+                    }
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
